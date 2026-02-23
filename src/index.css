@@ -1,19 +1,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
+/* =======================
+   THEME VARIABLES
+======================= */
 @theme {
-  /* --- MÀU SẮC CHUẨN XÁC THEO ẢNH PROTOTYPE MEDI --- */
-  --color-medi-teal: #2BB0A6;           /* Màu xanh ngọc chính xác của nút "Bắt đầu chia sẻ" */
-  --color-medi-teal-dark: #24968d;      /* Màu xanh đậm hơn khi nhấn giữ nút */
-  --color-medi-teal-light: #E8F6F8;     /* Màu nền xanh cực nhạt của các thẻ Card */
-  
-  /* --- MÀU HỆ THỐNG GIAO DIỆN --- */
-  --color-background: #FFFFFF;          /* Nền trắng sạch sẽ */
-  --color-foreground: #1E3A5F;          /* Màu xanh đen đậm cho tiêu đề chính */
-  --color-muted: #F5FAFB;               /* Màu xám ánh xanh rất nhẹ cho toàn bộ body */
-  --color-accent: #4FC3D7;              /* Màu xanh Cyan sáng cho các biểu tượng icon */
+  /* --- MÀU CHỦ ĐẠO MEDI (TEAL Y TẾ) --- */
+  --color-medi-teal: #3BB7AD;        /* Nút chính, CTA */
+  --color-medi-teal-dark: #2FA39A;   /* Hover / Active */
+  --color-medi-teal-light: #EAF7F6;  /* Nền card nhạt */
 
-  /* --- PHÔNG CHỮ --- */
+  /* --- MÀU GIAO DIỆN --- */
+  --color-background: #FFFFFF;
+  --color-muted: #F7FBFC;            /* Nền toàn trang */
+  --color-foreground: #243B53;       /* Tiêu đề xanh xám */
+  --color-accent: #5CCEC7;            /* Icon, điểm nhấn */
+
+  /* --- FONT --- */
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-signature: "Dancing Script", cursive;
 
@@ -21,28 +24,54 @@
   --radius-lg: 1rem;
 }
 
+/* =======================
+   BASE STYLES
+======================= */
 @layer base {
   body {
-    /* Sử dụng màu chữ xanh đen đậm trên nền xám xanh nhạt giúp nội dung cực kỳ dễ đọc */
-    @apply font-sans text-foreground bg-muted antialiased;
+    @apply font-sans bg-muted text-slate-600 antialiased;
   }
 
-  h1, h2, h3 {
-    /* Tiêu đề chính sử dụng màu xanh đen để tạo sự uy tín */
-    @apply font-bold text-foreground tracking-tight;
+  h1 {
+    @apply text-4xl font-bold text-foreground tracking-tight;
+  }
+
+  h2 {
+    @apply text-2xl font-semibold text-foreground tracking-tight;
+  }
+
+  h3 {
+    @apply text-lg font-semibold text-foreground;
   }
 }
 
+/* =======================
+   COMPONENTS
+======================= */
 @layer components {
-  /* Nút bấm "Bắt đầu chia sẻ tình trạng" chuẩn màu Teal */
+
+  /* --- NÚT CHÍNH (Bắt đầu chia sẻ) --- */
   .btn-primary-medi {
-    @apply bg-medi-teal text-white font-medium px-8 py-3 rounded-xl transition-all 
-           hover:bg-medi-teal-dark hover:shadow-lg active:scale-95 shadow-md;
+    @apply bg-medi-teal text-white font-medium
+           px-8 py-3 rounded-full
+           shadow-[0_6px_16px_rgba(59,183,173,0.35)]
+           transition-all duration-200
+           hover:bg-medi-teal-dark
+           hover:shadow-[0_10px_24px_rgba(59,183,173,0.45)]
+           active:scale-95;
   }
 
-  /* Thẻ tính năng (Card) như: Ghi nhận triệu chứng, Tiết kiệm thời gian... */
+  /* --- CARD TÍNH NĂNG --- */
   .card-feature {
-    @apply bg-white border border-slate-100 rounded-2xl p-6 shadow-sm 
-           hover:shadow-xl transition-all duration-300;
+    @apply bg-white rounded-2xl p-6
+           shadow-[0_8px_24px_rgba(0,0,0,0.04)]
+           hover:shadow-[0_12px_32px_rgba(0,0,0,0.06)]
+           transition-all duration-300;
+  }
+
+  /* --- ICON TRONG CARD --- */
+  .icon-medi {
+    @apply text-accent bg-medi-teal-light
+           rounded-xl p-3 inline-flex;
   }
 }
