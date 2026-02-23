@@ -117,7 +117,7 @@ export default function DoctorDashboard() {
     gender: "Nữ",
     birthYear: "1995",
     bhytId: location.state?.bhytId || "GD 4 79 1234567890",
-    recordId: "MED-2024-0812-001",
+    recordId: "MED-2026-0812-001",
     date: new Date().toLocaleDateString('vi-VN'),
     time: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
     subjective: {
@@ -125,8 +125,8 @@ export default function DoctorDashboard() {
       transcript: "Tôi bị đau họng từ sáng qua, nuốt vướng và hơi đau tai. Có sốt nhẹ khoảng 37.5 độ. Đã uống thuốc hạ sốt nhưng chưa đỡ hẳn. Cảm thấy mệt mỏi và chán ăn.",
     },
     images: [
-      "https://picsum.photos/seed/throat1/800/600",
-      "https://picsum.photos/seed/throat2/800/600"
+      "https://hoichimtroi.com/wp-content/uploads/2025/07/anh-nhiet-ke-sot-39-do.jpg"
+      
     ]
   };
 
