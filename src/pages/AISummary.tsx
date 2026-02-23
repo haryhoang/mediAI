@@ -81,70 +81,48 @@ export default function AISummary() {
       return;
     }
 
-    const generateSummary = async () => {
-      try {
+   const generateSummary = async () => {
+  try {
+    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+    if (!apiKey) return;
 
-        const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+    const genAI = new GoogleGenAI(apiKey);
+    // Sửa tên model chuẩn ở đây
+    const model = genAI.getGenerativeModel({ 
+      model: "gemini-1.5-flash",
+      generationConfig: {
+        responseMimeType: "application/json",
+      }
+    });
 
-    if (!apiKey) {
-        console.error("Lỗi: Không tìm thấy API Key. Hãy kiểm tra file .env và tiền tố VITE_");
-        return;
-    }
-
-    const ai = new GoogleGenAI(apiKey);
-        
-        const prompt = `Hãy đóng vai thư ký y khoa, phân tích đoạn hội thoại và hình ảnh để trả về JSON tóm tắt hồ sơ bệnh án.
+    const prompt = `Hãy đóng vai thư ký y khoa, phân tích đoạn hội thoại và hình ảnh để trả về JSON tóm tắt hồ sơ bệnh án.
         Văn bản giọng nói: "${transcript}"
         Số lượng ảnh triệu chứng: ${images?.length || 0}
         Số lượng ảnh thuốc: ${medicationImages?.length || 0}
         Số lượng ảnh kết quả xét nghiệm: ${previousResultImages?.length || 0}
         
-        Yêu cầu trích xuất:
-        - symptoms: Danh sách các triệu chứng chính.
-        - medicines: Danh mục thuốc đang sử dụng (nếu có nhắc tới hoặc từ ảnh).
-        - vital_signs: Trích xuất Mạch (pulse), Nhiệt độ (temperature), Huyết áp (blood_pressure), Nhịp thở (respiratory_rate), Chiều cao (height), Cân nặng (weight) nếu có thông tin.
-        - clinical_note: Tổng hợp chi tiết tình trạng bệnh.
-        
-        Nguyên tắc: Thông tin nào không chắc chắn hoặc thiếu thì để trống hoặc null, không được tự bịa.`;
+        Yêu cầu trích xuất JSON theo đúng cấu trúc:
+        {
+          "symptoms": ["chuỗi"],
+          "medicines": ["chuỗi"],
+          "vital_signs": {"pulse": "chuỗi", "temperature": "chuỗi", "blood_pressure": "chuỗi", "respiratory_rate": "chuỗi", "height": "chuỗi", "weight": "chuỗi"},
+          "clinical_note": "chuỗi"
+        }`;
 
-        const response = await ai.models.generateContent({
-          model: "gemini-3-flash-preview",
-          contents: prompt,
-          config: {
-            responseMimeType: "application/json",
-            responseSchema: {
-              type: Type.OBJECT,
-              properties: {
-                symptoms: { type: Type.ARRAY, items: { type: Type.STRING } },
-                medicines: { type: Type.ARRAY, items: { type: Type.STRING } },
-                vital_signs: {
-                  type: Type.OBJECT,
-                  properties: {
-                    pulse: { type: Type.STRING },
-                    temperature: { type: Type.STRING },
-                    blood_pressure: { type: Type.STRING },
-                    respiratory_rate: { type: Type.STRING },
-                    height: { type: Type.STRING },
-                    weight: { type: Type.STRING },
-                  }
-                },
-                clinical_note: { type: Type.STRING }
-              },
-              required: ["symptoms", "medicines", "vital_signs", "clinical_note"]
-            }
-          }
-        });
-
-        const data = JSON.parse(response.text);
-        setSummaryData(data);
-      } catch (err) {
-        console.error("AI Error:", err);
-        setError("Đã có lỗi xảy ra khi xử lý thông tin. Vui lòng thử lại.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
+    
+    // Parse dữ liệu từ AI
+    const data = JSON.parse(text);
+    setSummaryData(data);
+  } catch (err) {
+    console.error("AI Error:", err);
+    setError("AI chưa thể phân tích lúc này. Bạn có thể tự điền thông tin.");
+  } finally {
+    setIsLoading(false);
+  }
+};
     generateSummary();
   }, [transcript, images, medicationImages, previousResultImages]);
 
