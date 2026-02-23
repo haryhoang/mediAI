@@ -83,7 +83,15 @@ export default function AISummary() {
 
     const generateSummary = async () => {
       try {
-        const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+
+        const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+
+    if (!apiKey) {
+        console.error("Lỗi: Không tìm thấy API Key. Hãy kiểm tra file .env và tiền tố VITE_");
+        return;
+    }
+
+    const ai = new GoogleGenAI(apiKey);
         
         const prompt = `Hãy đóng vai thư ký y khoa, phân tích đoạn hội thoại và hình ảnh để trả về JSON tóm tắt hồ sơ bệnh án.
         Văn bản giọng nói: "${transcript}"
