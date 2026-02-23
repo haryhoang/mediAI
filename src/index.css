@@ -2,41 +2,46 @@
 @import "tailwindcss";
 
 @theme {
-
-  --color-medi-teal: #4db6ac;        
-  --color-medi-teal-dark: #00897b;    
-  --color-medi-teal-light: #e0f2f1;   
+  /* --- BẢNG MÀU TINH CHỈNH THEO ẢNH PROTOTYPE --- */
+  --color-medi-teal: #2BB0A6;           /* Màu xanh ngọc chuẩn của nút "Bắt đầu" */
+  --color-medi-teal-dark: #24968d;      /* Màu Teal đậm hơn khi hover */
+  --color-medi-teal-light: #E8F6F8;     /* Màu nền của các card tính năng */
   
-  
-  --color-medi-bg: #f8fdff;           /* Màu nền trắng xanh */
-  --color-medi-text-dark: #2c3e50;    /* Màu chữ tiêu đề đậm */
-  --color-medi-text-muted: #546e7a;   /* Màu chữ mô tả */
+  /* --- MÀU HỆ THỐNG (UI) --- */
+  --color-background: #FFFFFF;          /* Nền trắng sạch sẽ */
+  --color-foreground: #1E3A5F;          /* Màu chữ tiêu đề xanh đen đậm */
+  --color-muted: #F5FAFB;               /* Màu xám xanh rất nhẹ cho body */
+  --color-accent: #4FC3D7;              /* Màu xanh Cyan cho các icon phụ */
 
-
+  /* --- PHÔNG CHỮ --- */
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-signature: "Dancing Script", cursive;
+
+  /* --- BO GÓC --- */
+  --radius-lg: 1rem;
 }
 
 @layer base {
   body {
     
-    @apply font-sans text-medi-text-dark bg-medi-bg antialiased; 
+    @apply font-sans text-foreground bg-muted antialiased;
   }
 
-  h1, h2 {
-    
-    @apply font-bold text-[#263238] tracking-tight; [cite: 291, 297]
+  h1, h2, h3 {
+  
+    @apply font-bold text-foreground tracking-tight;
   }
 }
 
 @layer components {
- 
+
   .btn-primary-medi {
-    @apply bg-medi-teal text-white font-medium px-8 py-3 rounded-lg transition-all hover:bg-medi-teal-dark shadow-md; [cite: 270, 293]
+    @apply bg-medi-teal text-white font-medium px-8 py-3 rounded-xl transition-all 
+           hover:bg-medi-teal-dark hover:shadow-lg active:scale-95 shadow-md;
   }
 
-
   .card-feature {
-    @apply bg-white border border-slate-50 rounded-2xl p-6 shadow-sm hover:shadow-lg transition-shadow duration-300; [cite: 301, 313]
+    @apply bg-white border border-slate-100 rounded-2xl p-6 shadow-sm 
+           hover:shadow-xl transition-all duration-300;
   }
 }
