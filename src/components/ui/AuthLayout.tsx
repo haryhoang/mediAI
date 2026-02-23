@@ -9,6 +9,7 @@ interface AuthLayoutProps {
   subtitle: string;
 }
 
+
 export const AuthLayout = ({ children, title, subtitle }: AuthLayoutProps) => {
   const navigate = useNavigate();
 
@@ -18,9 +19,14 @@ export const AuthLayout = ({ children, title, subtitle }: AuthLayoutProps) => {
       <header className="bg-white border-b border-slate-100 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate(ROUTES.HOME)}>
-            <div className="w-8 h-8 bg-medi-teal rounded-full flex items-center justify-center">
-              <Heart className="text-white w-5 h-5 fill-current" />
-            </div>
+            
+            {/* THAY THẾ Ở ĐÂY: Thay hình tròn trái tim bằng logo ảnh của em */}
+            <img 
+              src="/favicon.jpg" 
+              alt="Medi Logo" 
+              className="w-9 h-9 object-contain rounded-lg shadow-sm" 
+            />
+            
             <span className="text-xl font-bold text-slate-800 tracking-tight">Medi</span>
           </div>
           
