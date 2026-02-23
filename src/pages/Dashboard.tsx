@@ -167,7 +167,7 @@ export default function Dashboard() {
             <div className="w-10 h-10 bg-medi-teal/10 rounded-xl flex items-center justify-center mb-6">
               <Mic className="text-medi-teal w-5 h-5" />
             </div>
-            <h2 className="text-xl font-bold text-slate-900 mb-2">Chia sẻ tình trạng bệnh</h2>
+            <h2 className="text-xl font-bold text-slate-900 mb-2">Chia sẻ sức khỏe của bạn</h2>
             <p className="text-sm text-slate-500 mb-8 leading-relaxed">
               Ghi âm hoặc tải hình ảnh triệu chứng trước khi thăm khám
             </p>
@@ -231,7 +231,7 @@ export default function Dashboard() {
               className="w-full mt-8 py-3.5 bg-white"
               onClick={() => setIsBookingOpen(true)}
             >
-              Đăng ký tái khám
+              Đặt lịch
             </Button>
           </Card>
 
