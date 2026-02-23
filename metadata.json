@@ -1,0 +1,5 @@
+{
+  "name": "Medi - Trợ lý sức khỏe AI",
+  "description": "Medi là trợ lý AI giúp ghi nhận triệu chứng sớm, hỗ trợ bác sĩ khám nhanh, chính xác hơn.",
+  "requestFramePermissions": ["microphone"]
+}
