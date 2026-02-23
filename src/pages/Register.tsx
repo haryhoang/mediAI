@@ -55,7 +55,7 @@ export default function Register() {
   return (
     <AuthLayout 
       title="Đăng ký tài khoản" 
-      subtitle="Tạo tài khoản để bắt đầu chia sẻ triệu chứng với bác sĩ"
+      subtitle="Tạo tài khoản để bắt đầu chia sẻ sức khỏe với chúng tôi"
     >
       {/* Security Banner */}
       <motion.div 
@@ -88,7 +88,7 @@ export default function Register() {
             </label>
             <input
               {...register("bhyt")}
-              placeholder="HS40127041102"
+              placeholder="HS40127014102"
               className={`w-full px-4 py-3.5 bg-slate-50 border ${errors.bhyt ? 'border-red-300' : 'border-slate-100'} rounded-xl focus:outline-none focus:ring-2 focus:ring-medi-teal/20 focus:border-medi-teal transition-all`}
             />
             <p className="text-xs text-slate-400 ml-1">15 số trên thẻ bảo hiểm y tế của bạn</p>
