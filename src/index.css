@@ -2,15 +2,15 @@
 @import "tailwindcss";
 
 @theme {
- 
-  --color-medi-teal: #26a69a;         /* Màu chủ đạo em đã chọn */
-  --color-medi-teal-dark: #00796b;    /* Dùng cho Hover nút bấm */
-  --color-medi-teal-light: #e0f2f1;   /* Dùng cho nền các ô Input hoặc Card nhẹ */
-  
 
-  --color-medi-bg: #f9fafb;           /* Màu nền toàn trang (xám cực nhẹ, chuyên nghiệp) */
-  --color-medi-text: #1e293b;         /* Màu chữ chính (Slate 800) */
-  --color-medi-accent: #ffb74d;       /* Màu nhấn (Cam nhạt) cho các thông báo nhắc nhở */
+  --color-medi-teal: #4db6ac;        
+  --color-medi-teal-dark: #00897b;    
+  --color-medi-teal-light: #e0f2f1;   
+  
+  
+  --color-medi-bg: #f8fdff;           /* Màu nền trắng xanh */
+  --color-medi-text-dark: #2c3e50;    /* Màu chữ tiêu đề đậm */
+  --color-medi-text-muted: #546e7a;   /* Màu chữ mô tả */
 
 
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
@@ -19,22 +19,24 @@
 
 @layer base {
   body {
- 
-    @apply font-sans text-medi-text bg-medi-bg antialiased;
+    
+    @apply font-sans text-medi-text-dark bg-medi-bg antialiased; 
   }
 
-  h1, h2, h3 {
-    @apply font-bold text-medi-teal-dark;
+  h1, h2 {
+    
+    @apply font-bold text-[#263238] tracking-tight; [cite: 291, 297]
   }
 }
 
-
 @layer components {
-  .btn-medi {
-    @apply bg-medi-teal text-white px-6 py-2 rounded-lg transition-all hover:bg-medi-teal-dark shadow-sm active:scale-95;
+ 
+  .btn-primary-medi {
+    @apply bg-medi-teal text-white font-medium px-8 py-3 rounded-lg transition-all hover:bg-medi-teal-dark shadow-md; [cite: 270, 293]
   }
-  
-  .card-medi {
-    @apply bg-white border border-slate-100 rounded-xl p-6 shadow-sm;
+
+
+  .card-feature {
+    @apply bg-white border border-slate-50 rounded-2xl p-6 shadow-sm hover:shadow-lg transition-shadow duration-300; [cite: 301, 313]
   }
 }
