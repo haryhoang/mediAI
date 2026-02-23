@@ -19,7 +19,7 @@ import {
   Lock
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { ROUTES } from "../constants/routes";
@@ -81,44 +81,34 @@ export default function AISummary() {
       return;
     }
 
-   const generateSummary = async () => {
+ const generateSummary = async () => {
   try {
+    setIsLoading(true);
     const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-    if (!apiKey) return;
+    
+    if (!apiKey) {
+      throw new Error("Không tìm thấy API Key trong file .env");
+    }
 
-    const genAI = new GoogleGenAI(apiKey);
-    // Sửa tên model chuẩn ở đây
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash",
-      generationConfig: {
-        responseMimeType: "application/json",
-      }
-    });
+    const genAI = new GoogleGenerativeAI(apiKey);
+    // Dùng model 1.5-flash cho nhanh và ổn định
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    const prompt = `Hãy đóng vai thư ký y khoa, phân tích đoạn hội thoại và hình ảnh để trả về JSON tóm tắt hồ sơ bệnh án.
-        Văn bản giọng nói: "${transcript}"
-        Số lượng ảnh triệu chứng: ${images?.length || 0}
-        Số lượng ảnh thuốc: ${medicationImages?.length || 0}
-        Số lượng ảnh kết quả xét nghiệm: ${previousResultImages?.length || 0}
-        
-        Yêu cầu trích xuất JSON theo đúng cấu trúc:
-        {
-          "symptoms": ["chuỗi"],
-          "medicines": ["chuỗi"],
-          "vital_signs": {"pulse": "chuỗi", "temperature": "chuỗi", "blood_pressure": "chuỗi", "respiratory_rate": "chuỗi", "height": "chuỗi", "weight": "chuỗi"},
-          "clinical_note": "chuỗi"
-        }`;
+    const prompt = `Bạn là thư ký y khoa. Hãy phân tích nội dung sau và trả về JSON:
+      Nội dung: "${transcript}"
+      Yêu cầu JSON có cấu trúc: { "symptoms": [], "medicines": [], "vital_signs": {"pulse": "", "temperature": "", "blood_pressure": ""}, "clinical_note": "" }`;
 
     const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
+    const text = result.response.text();
     
-    // Parse dữ liệu từ AI
-    const data = JSON.parse(text);
+    // Làm sạch chuỗi nếu AI trả về có kèm ký tự ```json
+    const cleanText = text.replace(/```json|```/g, "").trim();
+    const data = JSON.parse(cleanText);
+    
     setSummaryData(data);
-  } catch (err) {
-    console.error("AI Error:", err);
-    setError("AI chưa thể phân tích lúc này. Bạn có thể tự điền thông tin.");
+  } catch (err: any) {
+    console.error("Lỗi kết nối AI:", err);
+    setError("Lỗi: " + (err.message || "Không thể kết nối AI"));
   } finally {
     setIsLoading(false);
   }
