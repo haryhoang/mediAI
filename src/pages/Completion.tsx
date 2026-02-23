@@ -16,7 +16,8 @@ import {
   Wind
 } from "lucide-react";
 import { motion } from "motion/react";
-import { GoogleGenAI, Type } from "@google/genai";
+
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { ROUTES } from "../constants/routes";
@@ -42,50 +43,52 @@ export default function Completion() {
     { id: "results", label: "Kết quả khám trước", desc: "Kết quả xét nghiệm, chẩn đoán hình ảnh gần đây (nếu có)" },
   ];
 
-  useEffect(() => {
-    const fetchSuggestions = async () => {
-      try {
-        const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-        const symptomsText = summaryData?.symptoms?.join(", ") || transcript || "triệu chứng mệt mỏi";
-        
-        const response = await ai.models.generateContent({
-          model: "gemini-3-flash-preview",
-          contents: `Hãy dựa trên triệu chứng "${symptomsText}" để đưa ra 4 lời khuyên chăm sóc sức khỏe ban đầu ngắn gọn, thực tế cho bệnh nhân.`,
-          config: {
-            systemInstruction: "Bạn là trợ lý y khoa. Hãy đưa ra các lời khuyên chăm sóc sức khỏe ban đầu an toàn, không thay thế chẩn đoán bác sĩ. Trả về JSON mảng 4 đối tượng {title, description}.",
-            responseMimeType: "application/json",
-            responseSchema: {
-              type: Type.ARRAY,
-              items: {
-                type: Type.OBJECT,
-                properties: {
-                  title: { type: Type.STRING },
-                  description: { type: Type.STRING }
-                },
-                required: ["title", "description"]
-              }
-            }
-          }
-        });
+useEffect(() => {
+  const fetchSuggestions = async () => {
+    try {
+      const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+      if (!apiKey) return;
 
-        const data = JSON.parse(response.text);
-        setSuggestions(data);
-      } catch (err) {
-        console.error("AI Error:", err);
-        // Fallback suggestions
-        setSuggestions([
-          { title: "Nghỉ ngơi đầy đủ", description: "Tránh hoạt động nặng, ngủ đủ giấc để cơ thể phục hồi." },
-          { title: "Uống đủ nước", description: "Uống ít nhất 2 lít nước mỗi ngày." },
-          { title: "Theo dõi triệu chứng", description: "Ghi chú nếu triệu chứng thay đổi hoặc trở nên nghiêm trọng hơn." },
-          { title: "Tránh căng thẳng", description: "Giữ tinh thần thoải mái, hít thở sâu." }
-        ]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+      // 1. Khởi tạo đúng cú pháp thư viện mới
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const model = genAI.getGenerativeModel({ 
+        model: "gemini-1.5-flash",
+        generationConfig: {
+          responseMimeType: "application/json",
+        }
+      });
 
-    fetchSuggestions();
-  }, [transcript, summaryData]);
+      const symptomsText = summaryData?.symptoms?.join(", ") || transcript || "triệu chứng mệt mỏi";
+      
+      // 2. Cấu trúc Prompt rõ ràng
+      const prompt = `Bạn là trợ lý y khoa. Dựa trên triệu chứng: "${symptomsText}", hãy đưa ra 4 lời khuyên chăm sóc sức khỏe ban đầu an toàn. 
+      Trả về kết quả dưới dạng JSON mảng các đối tượng có cấu trúc: [{"title": "tên lời khuyên", "description": "chi tiết"}]`;
+
+      // 3. Gọi hàm generateContent chuẩn
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      const text = response.text();
+      
+      // 4. Parse dữ liệu và cập nhật State
+      const data = JSON.parse(text);
+      setSuggestions(data);
+
+    } catch (err) {
+      console.error("AI Error:", err);
+      // Fallback khi AI lỗi hoặc Key hết hạn
+      setSuggestions([
+        { title: "Nghỉ ngơi đầy đủ", description: "Tránh hoạt động nặng, ngủ đủ giấc để cơ thể phục hồi." },
+        { title: "Uống đủ nước", description: "Uống ít nhất 2 lít nước mỗi ngày." },
+        { title: "Theo dõi triệu chứng", description: "Ghi chú nếu triệu chứng thay đổi hoặc trở nên nghiêm trọng hơn." },
+        { title: "Tránh căng thẳng", description: "Giữ tinh thần thoải mái, hít thở sâu." }
+      ]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  fetchSuggestions();
+}, [transcript, summaryData]);
 
   const toggleCheck = (id: string) => {
     setCheckedItems(prev => ({ ...prev, [id]: !prev[id] }));
