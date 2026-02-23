@@ -46,48 +46,54 @@ export default function Completion() {
 useEffect(() => {
   const fetchSuggestions = async () => {
     try {
+      setIsLoading(true);
+      // 1. Lấy API Key từ biến môi trường của Vite
       const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-      if (!apiKey) return;
+      
+      if (!apiKey) {
+        console.error("Thiếu API Key trong Vercel Settings!");
+        return;
+      }
 
-      // 1. Khởi tạo đúng cú pháp thư viện mới
+      // 2. Khởi tạo đúng thư viện chuẩn
       const genAI = new GoogleGenerativeAI(apiKey);
       const model = genAI.getGenerativeModel({ 
-        model: "gemini-1.5-flash",
-        generationConfig: {
-          responseMimeType: "application/json",
-        }
+        model: "gemini-1.5-flash" 
       });
 
       const symptomsText = summaryData?.symptoms?.join(", ") || transcript || "triệu chứng mệt mỏi";
       
-      // 2. Cấu trúc Prompt rõ ràng
-      const prompt = `Bạn là trợ lý y khoa. Dựa trên triệu chứng: "${symptomsText}", hãy đưa ra 4 lời khuyên chăm sóc sức khỏe ban đầu an toàn. 
-      Trả về kết quả dưới dạng JSON mảng các đối tượng có cấu trúc: [{"title": "tên lời khuyên", "description": "chi tiết"}]`;
+      // 3. Prompt yêu cầu trả về định dạng JSON mảng
+      const prompt = `Bạn là trợ lý y khoa. Dựa trên triệu chứng: "${symptomsText}", hãy đưa ra 4 lời khuyên chăm sóc sức khỏe. 
+      Yêu cầu trả về duy nhất một mảng JSON có cấu trúc: [{"title": "tên lời khuyên", "description": "mô tả chi tiết"}]`;
 
-      // 3. Gọi hàm generateContent chuẩn
+      // 4. Gọi hàm generateContent đúng cú pháp (Không dùng ai.models)
       const result = await model.generateContent(prompt);
       const response = await result.response;
       const text = response.text();
       
-      // 4. Parse dữ liệu và cập nhật State
-      const data = JSON.parse(text);
+      // Làm sạch text (tránh trường hợp AI trả về markdown ```json)
+      const cleanJson = text.replace(/```json|```/g, "").trim();
+      const data = JSON.parse(cleanJson);
+      
       setSuggestions(data);
-
     } catch (err) {
       console.error("AI Error:", err);
-      // Fallback khi AI lỗi hoặc Key hết hạn
+      // Nếu lỗi (như 404), dùng dữ liệu mặc định để web không bị trắng trang
       setSuggestions([
-        { title: "Nghỉ ngơi đầy đủ", description: "Tránh hoạt động nặng, ngủ đủ giấc để cơ thể phục hồi." },
-        { title: "Uống đủ nước", description: "Uống ít nhất 2 lít nước mỗi ngày." },
-        { title: "Theo dõi triệu chứng", description: "Ghi chú nếu triệu chứng thay đổi hoặc trở nên nghiêm trọng hơn." },
-        { title: "Tránh căng thẳng", description: "Giữ tinh thần thoải mái, hít thở sâu." }
+        { title: "Nghỉ ngơi đầy đủ", description: "Tránh hoạt động nặng để cơ thể phục hồi." },
+        { title: "Uống đủ nước", description: "Bổ sung nước lọc hoặc oresol nếu cần." },
+        { title: "Theo dõi nhiệt độ", description: "Kiểm tra thân nhiệt định kỳ." },
+        { title: "Thăm khám sớm", description: "Đến gặp bác sĩ nếu triệu chứng kéo dài." }
       ]);
     } finally {
       setIsLoading(false);
     }
   };
 
-  fetchSuggestions();
+  if (transcript || summaryData) {
+    fetchSuggestions();
+  }
 }, [transcript, summaryData]);
 
   const toggleCheck = (id: string) => {
