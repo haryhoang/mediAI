@@ -57,12 +57,12 @@ const Hero = () => {
             Hãy để Medi cùng hiểu tình trạng sức khỏe của bạn
           </h1>
           <p className="text-lg text-slate-600 mb-8 leading-relaxed max-w-xl">
-            Medi là trợ lý AI giúp ghi nhận triệu chứng sớm, hỗ trợ bác sĩ khám nhanh, chính xác hơn, lưu trữ dữ liệu an toàn và hiệu quả
+            Medi là trợ lý AI giúp ghi nhận tình trạng sức khỏe, hỗ trợ bác sĩ khám nhanh, chính xác hơn, lưu trữ dữ liệu an toàn và hiệu quả
           </p>
           
           <div className="flex flex-row gap-4 mb-10">
             <Button size="lg" className="flex-1 sm:flex-none px-8 h-14 text-base bg-medi-teal hover:bg-medi-teal-dark shadow-lg shadow-medi-teal/20" onClick={() => navigate(ROUTES.LOGIN)}>
-              Bắt đầu chia sẻ tình trạng
+              Bắt đầu chia sẻ
             </Button>
             <Button 
               variant="outline" 
@@ -104,7 +104,7 @@ const Hero = () => {
         >
           <div className="rounded-3xl overflow-hidden shadow-2xl border border-slate-100">
             <img 
-              src="https://picsum.photos/seed/medical-ai/1200/900" 
+              src="https://funix.edu.vn/wp-content/uploads/2023/11/tri-tue-nhantao-trong-y-te-2.jpg" 
               alt="Medi AI Assistant" 
               className="w-full h-auto object-cover"
               referrerPolicy="no-referrer"
@@ -123,18 +123,18 @@ const Features = () => {
   const features = [
     {
       icon: <Stethoscope className="w-8 h-8 text-medi-teal" />,
-      title: "Ghi nhận triệu chứng",
-      desc: "Nói hoặc tải hình ảnh về tình trạng sức khỏe. Medi sẽ ghi nhận một cách có hệ thống, an toàn, hiệu quả."
+      title: "Ghi nhận tình trạng sức khỏe",
+      desc: "Nói hoặc tải hình ảnh về tình trạng sức khỏe. Medi sẽ ghi nhận một cách có hệ thống, an toàn, hiệu quả"
     },
     {
       icon: <Clock className="w-8 h-8 text-medi-teal" />,
       title: "Tiết kiệm thời gian",
-      desc: "Bác sĩ xem trước thông tin, giảm thời gian hỏi và ghi chép trong buổi khám."
+      desc: "Bác sĩ xem trước thông tin, giảm thời gian hỏi và ghi chép trong buổi khám"
     },
     {
       icon: <FileText className="w-8 h-8 text-medi-teal" />,
       title: "Hướng dẫn chuẩn bị",
-      desc: "Nhận gợi ý chăm sóc ban đầu và danh sách những gì cần mang khi đi khám."
+      desc: "Nhận gợi ý chăm sóc ban đầu và danh sách những gì cần mang khi đi khám"
     }
   ];
 
@@ -166,18 +166,18 @@ const Process = () => {
   const steps = [
     {
       number: "1",
-      title: "Đăng ký với BHYT",
-      desc: "Sử dụng mã thẻ bảo hiểm y tế để tạo hồ sơ an toàn."
+      title: "Đăng ký nhanh chóng",
+      desc: "Thêm phương thức mã thẻ bảo hiểm y tế, giúp bạn tạo hồ sơ an toàn"
     },
     {
       number: "2",
-      title: "Chia sẻ triệu chứng",
-      desc: "Nói hoặc tải hình ảnh về tình trạng sức khỏe hiện tại của bạn."
+      title: "Chia sẻ sức khỏe",
+      desc: "Nói hoặc tải hình ảnh về tình trạng sức khỏe hiện tại của bạn"
     },
     {
       number: "3",
-      title: "Nhận hướng dẫn",
-      desc: "Xem gợi ý chăm sóc và chuẩn bị cho buổi khám bệnh."
+      title: "Nhận hướng dẫn, tra cứu và đặt lịch",
+      desc: "Xem gợi ý chăm sóc và chuẩn bị cho buổi khám bệnh"
     }
   ];
 
@@ -214,7 +214,7 @@ const MobileDownload = () => {
           <Smartphone className="w-8 h-8 text-medi-teal" />
         </div>
         <h2 className="text-3xl font-bold text-slate-900 mb-4">Tải Medi trên điện thoại</h2>
-        <p className="text-slate-600 mb-12">Ghi nhận triệu chứng nhanh chóng – mọi lúc, mọi nơi</p>
+        <p className="text-slate-600 mb-12">Ghi nhận thông tin nhanh chóng – mọi lúc, mọi nơi</p>
         
         <div className="flex flex-wrap justify-center gap-4">
           <a href="#" className="transition-transform hover:scale-105">
@@ -234,9 +234,9 @@ const CTA = () => {
   return (
     <section className="py-24 px-6">
       <div className="max-w-4xl mx-auto bg-slate-50 rounded-[2.5rem] p-12 md:p-20 text-center border border-slate-100">
-        <h2 className="text-4xl font-bold text-slate-900 mb-6">Sẵn sàng bắt đầu?</h2>
+        <h2 className="text-4xl font-bold text-slate-900 mb-6">Sẵn sàng trải nghiệm</h2>
         <p className="text-lg text-slate-600 mb-10 max-w-xl mx-auto">
-          Chia sẻ triệu chứng của bạn ngay hôm nay để chuẩn bị tốt hơn cho buổi khám bệnh.
+          Chia sẻ với chúng tôi để cùng chuẩn bị tốt hơn
         </p>
         <Button size="lg" className="px-12" onClick={() => navigate(ROUTES.REGISTER)}>Bắt đầu với Medi</Button>
       </div>
@@ -255,7 +255,7 @@ const Footer = () => {
           <span className="text-xl font-bold text-slate-800">Medi</span>
         </div>
         <p className="text-slate-400 text-sm">
-          © 2026 Medi. Trợ lý sức khỏe AI của bác sĩ và bạn.
+          © 2026 Medi. Trợ lý sức khỏe AI của bác sĩ và bạn
         </p>
       </div>
     </footer>
