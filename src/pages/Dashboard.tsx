@@ -33,8 +33,8 @@ const Header = () => {
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-3 text-right">
             <div className="hidden sm:block">
-              <p className="text-sm font-bold text-slate-900">Nguyễn Ngọc Ly</p>
-              <p className="text-xs text-slate-500">Bệnh nhân</p>
+              <p className="text-sm font-bold text-slate-900">Người dùng</p>
+              <p className="text-xs text-slate-500">ID HS47127014102</p>
             </div>
             <div className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center border border-slate-200">
               <User className="text-slate-400 w-6 h-6" />
