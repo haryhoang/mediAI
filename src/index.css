@@ -2,16 +2,16 @@
 @import "tailwindcss";
 
 @theme {
-  /* --- BẢNG MÀU TINH CHỈNH THEO ẢNH PROTOTYPE --- */
-  --color-medi-teal: #2BB0A6;           /* Màu xanh ngọc chuẩn của nút "Bắt đầu" */
-  --color-medi-teal-dark: #24968d;      /* Màu Teal đậm hơn khi hover */
-  --color-medi-teal-light: #E8F6F8;     /* Màu nền của các card tính năng */
+  /* --- MÀU SẮC CHUẨN XÁC THEO ẢNH PROTOTYPE MEDI --- */
+  --color-medi-teal: #2BB0A6;           /* Màu xanh ngọc chính xác của nút "Bắt đầu chia sẻ" */
+  --color-medi-teal-dark: #24968d;      /* Màu xanh đậm hơn khi nhấn giữ nút */
+  --color-medi-teal-light: #E8F6F8;     /* Màu nền xanh cực nhạt của các thẻ Card */
   
-  /* --- MÀU HỆ THỐNG (UI) --- */
+  /* --- MÀU HỆ THỐNG GIAO DIỆN --- */
   --color-background: #FFFFFF;          /* Nền trắng sạch sẽ */
-  --color-foreground: #1E3A5F;          /* Màu chữ tiêu đề xanh đen đậm */
-  --color-muted: #F5FAFB;               /* Màu xám xanh rất nhẹ cho body */
-  --color-accent: #4FC3D7;              /* Màu xanh Cyan cho các icon phụ */
+  --color-foreground: #1E3A5F;          /* Màu xanh đen đậm cho tiêu đề chính */
+  --color-muted: #F5FAFB;               /* Màu xám ánh xanh rất nhẹ cho toàn bộ body */
+  --color-accent: #4FC3D7;              /* Màu xanh Cyan sáng cho các biểu tượng icon */
 
   /* --- PHÔNG CHỮ --- */
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
@@ -23,23 +23,24 @@
 
 @layer base {
   body {
-    
+    /* Sử dụng màu chữ xanh đen đậm trên nền xám xanh nhạt giúp nội dung cực kỳ dễ đọc */
     @apply font-sans text-foreground bg-muted antialiased;
   }
 
   h1, h2, h3 {
-  
+    /* Tiêu đề chính sử dụng màu xanh đen để tạo sự uy tín */
     @apply font-bold text-foreground tracking-tight;
   }
 }
 
 @layer components {
-
+  /* Nút bấm "Bắt đầu chia sẻ tình trạng" chuẩn màu Teal */
   .btn-primary-medi {
     @apply bg-medi-teal text-white font-medium px-8 py-3 rounded-xl transition-all 
            hover:bg-medi-teal-dark hover:shadow-lg active:scale-95 shadow-md;
   }
 
+  /* Thẻ tính năng (Card) như: Ghi nhận triệu chứng, Tiết kiệm thời gian... */
   .card-feature {
     @apply bg-white border border-slate-100 rounded-2xl p-6 shadow-sm 
            hover:shadow-xl transition-all duration-300;
