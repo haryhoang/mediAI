@@ -6,7 +6,7 @@
 ======================= */
 @theme {
   /* --- MÀU CHỦ ĐẠO MEDI (TEAL Y TẾ) --- */
-  --color-medi-teal: #3BB7AD;        /* Nút chính, CTA */
+  --color-medi-teal: #0097b2;        /* Nút chính, CTA */
   --color-medi-teal-dark: #2FA39A;   /* Hover / Active */
   --color-medi-teal-light: #EAF7F6;  /* Nền card nhạt */
 
