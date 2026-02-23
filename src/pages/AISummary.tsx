@@ -93,7 +93,8 @@ export default function AISummary() {
     const genAI = new GoogleGenerativeAI(apiKey);
     // Dùng model 1.5-flash cho nhanh và ổn định
    
-    const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-flash" });
+  
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
 
     const prompt = `Bạn là thư ký y khoa. Hãy phân tích nội dung sau và trả về JSON:
       Nội dung: "${transcript}"
