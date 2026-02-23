@@ -2,14 +2,39 @@
 @import "tailwindcss";
 
 @theme {
-  --color-medi-teal: #26a69a;
-  --color-medi-teal-dark: #00796b;
+ 
+  --color-medi-teal: #26a69a;         /* Màu chủ đạo em đã chọn */
+  --color-medi-teal-dark: #00796b;    /* Dùng cho Hover nút bấm */
+  --color-medi-teal-light: #e0f2f1;   /* Dùng cho nền các ô Input hoặc Card nhẹ */
+  
+
+  --color-medi-bg: #f9fafb;           /* Màu nền toàn trang (xám cực nhẹ, chuyên nghiệp) */
+  --color-medi-text: #1e293b;         /* Màu chữ chính (Slate 800) */
+  --color-medi-accent: #ffb74d;       /* Màu nhấn (Cam nhạt) cho các thông báo nhắc nhở */
+
+
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-signature: "Dancing Script", cursive;
 }
 
 @layer base {
   body {
-    @apply font-sans text-slate-900 bg-white;
+ 
+    @apply font-sans text-medi-text bg-medi-bg antialiased;
+  }
+
+  h1, h2, h3 {
+    @apply font-bold text-medi-teal-dark;
+  }
+}
+
+
+@layer components {
+  .btn-medi {
+    @apply bg-medi-teal text-white px-6 py-2 rounded-lg transition-all hover:bg-medi-teal-dark shadow-sm active:scale-95;
+  }
+  
+  .card-medi {
+    @apply bg-white border border-slate-100 rounded-xl p-6 shadow-sm;
   }
 }
