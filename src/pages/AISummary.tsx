@@ -84,41 +84,22 @@ export default function AISummary() {
 const generateSummary = async () => {
   try {
     setIsLoading(true);
-    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-    
-    if (!apiKey) {
-      throw new Error("Không tìm thấy API Key trong cấu hình hệ thống.");
-    }
-
-    
-    const genAI = new GoogleGenerativeAI(apiKey);
-
-  
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-2.0-flash", 
-      generationConfig: {
-        responseMimeType: "application/json",
-      },
-    });
-   
     const prompt = `Bạn là thư ký y khoa. Hãy phân tích nội dung sau và trả về JSON:
       Nội dung: "${transcript}"
       Yêu cầu JSON có cấu trúc: { "symptoms": [], "medicines": [], "vital_signs": {"pulse": "", "temperature": "", "blood_pressure": ""}, "clinical_note": "" }`;
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
-    
-    // Với responseMimeType: "application/json", AI sẽ trả về JSON thuần
-    // nên bạn không cần bước replace "```json" nữa, nhưng để an toàn thì cứ giữ lại
-    const cleanText = text.replace(/```json|```/g, "").trim();
-    const data = JSON.parse(cleanText);
-    
+    const response = await fetch('/api/gemini', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt })
+    });
+
+    if (!response.ok) throw new Error("Lỗi kết nối Server AI");
+
+    const data = await response.json();
     setSummaryData(data);
   } catch (err: any) {
-    console.error("Lỗi kết nối AI:", err);
-    // Nếu lỗi vẫn là 404, hãy kiểm tra xem thư viện @google/generative-ai có bản mới nhất chưa
-    setError("Lỗi: " + (err.message || "Không thể kết nối AI"));
+    setError("Lỗi: " + err.message);
   } finally {
     setIsLoading(false);
   }
