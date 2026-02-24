@@ -98,8 +98,7 @@ export default function AISummary() {
 });
    
   
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
+    
     const prompt = `Bạn là thư ký y khoa. Hãy phân tích nội dung sau và trả về JSON:
       Nội dung: "${transcript}"
       Yêu cầu JSON có cấu trúc: { "symptoms": [], "medicines": [], "vital_signs": {"pulse": "", "temperature": "", "blood_pressure": ""}, "clinical_note": "" }`;
