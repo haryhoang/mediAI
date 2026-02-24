@@ -2,26 +2,51 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') return res.status(405).send('Method Not Allowed');
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method Not Allowed" });
+  }
 
   try {
-    // Key này lấy từ Environment Variables trên Vercel (An toàn 100%)
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const { prompt, systemInstruction } = req.body;
+    // Ensure API key is available
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      return res.status(500).json({ error: "Missing GEMINI_API_KEY" });
+    }
 
-    // Bạn có thể dùng gemini-2.0-flash cho tốc độ cực nhanh
-    const model = genAI.getGenerativeModel({ 
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const { prompt, systemInstruction } = req.body || {};
+
+    if (!prompt) {
+      return res.status(400).json({ error: "Missing prompt in request body" });
+    }
+
+    // Choose model (gemini-2.0-flash is fast)
+    const model = genAI.getGenerativeModel({
       model: "gemini-2.0-flash",
-      generationConfig: { responseMimeType: "application/json" }
+      generationConfig: { responseMimeType: "application/json" },
     });
 
-    // Nếu có systemInstruction (lời khuyên hệ thống), bạn có thể thêm vào đây
-    const result = await model.generateContent(systemInstruction ? `${systemInstruction}\n\n${prompt}` : prompt);
+    // Build input text
+    const inputText = systemInstruction
+      ? `${systemInstruction}\n\n${prompt}`
+      : prompt;
+
+    // Generate content
+    const result = await model.generateContent(inputText);
     const response = await result.response;
-    
-    return res.status(200).json(JSON.parse(response.text()));
+    const text = response.text();
+
+    // Try parsing JSON, fallback to plain text
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      data = { output: text };
+    }
+
+    return res.status(200).json(data);
   } catch (error) {
-    console.error("Gemini Error:", error);
-    return res.status(500).json({ error: "Lỗi kết nối AI" });
+    console.error("Gemini Error:", error.message, error.stack);
+    return res.status(500).json({ error: "AI connection error", details: error.message });
   }
 }
