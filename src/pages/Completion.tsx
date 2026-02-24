@@ -45,41 +45,40 @@ export default function Completion() {
 
 useEffect(() => {
   const fetchSuggestions = async () => {
+    // Chỉ chạy nếu có dữ liệu đầu vào
+    if (!transcript && !summaryData?.symptoms) return;
+
     try {
       setIsLoading(true);
-      // 1. Lấy API Key từ biến môi trường của Vite
       const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
       
       if (!apiKey) {
-        console.error("Thiếu API Key trong Vercel Settings!");
+        console.error("Thiếu API Key!");
         return;
       }
 
-      // 2. Khởi tạo đúng thư viện chuẩn
       const genAI = new GoogleGenerativeAI(apiKey);
       const model = genAI.getGenerativeModel({ 
-        model: "gemini-1.5-flash" 
+        model: "gemini-1.5-flash",
+        // Ép AI luôn trả về JSON sạch
+        generationConfig: { responseMimeType: "application/json" }
       });
 
-      const symptomsText = summaryData?.symptoms?.join(", ") || transcript || "triệu chứng mệt mỏi";
+      const symptomsText = summaryData?.symptoms?.join(", ") || transcript;
       
-      // 3. Prompt yêu cầu trả về định dạng JSON mảng
-      const prompt = `Bạn là trợ lý y khoa. Dựa trên triệu chứng: "${symptomsText}", hãy đưa ra 4 lời khuyên chăm sóc sức khỏe. 
-      Yêu cầu trả về duy nhất một mảng JSON có cấu trúc: [{"title": "tên lời khuyên", "description": "mô tả chi tiết"}]`;
+      const prompt = `Bạn là trợ lý y khoa. Dựa trên triệu chứng: "${symptomsText}", hãy đưa ra 4 lời khuyên sức khỏe. 
+      Trả về duy nhất mảng JSON: [{"title": "...", "description": "..."}]`;
 
-      // 4. Gọi hàm generateContent đúng cú pháp (Không dùng ai.models)
       const result = await model.generateContent(prompt);
-      const response = await result.response;
-      const text = response.text();
+      const text = result.response.text();
       
-      // Làm sạch text (tránh trường hợp AI trả về markdown ```json)
-      const cleanJson = text.replace(/```json|```/g, "").trim();
-      const data = JSON.parse(cleanJson);
-      
+      // JSON.parse trực tiếp vì đã có cấu hình responseMimeType ở trên
+      const data = JSON.parse(text);
       setSuggestions(data);
+
     } catch (err) {
       console.error("AI Error:", err);
-      // Nếu lỗi (như 404), dùng dữ liệu mặc định để web không bị trắng trang
+      // Giữ nguyên fallback data của bạn là rất tốt!
       setSuggestions([
         { title: "Nghỉ ngơi đầy đủ", description: "Tránh hoạt động nặng để cơ thể phục hồi." },
         { title: "Uống đủ nước", description: "Bổ sung nước lọc hoặc oresol nếu cần." },
@@ -91,6 +90,8 @@ useEffect(() => {
     }
   };
 
+  fetchSuggestions();
+}, [transcript, summaryData?.symptoms]); // Thêm mảng phụ thuộc ở đây
   if (transcript || summaryData) {
     fetchSuggestions();
   }
