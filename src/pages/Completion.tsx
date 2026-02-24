@@ -43,34 +43,47 @@ export default function Completion() {
     { id: "results", label: "Kết quả khám trước", desc: "Kết quả xét nghiệm, chẩn đoán hình ảnh gần đây (nếu có)" },
   ];
 
-useEffect(() => {
-  const fetchSuggestions = async () => {
-    if (!transcript && !summaryData?.symptoms) return;
+ useEffect(() => {
+    const fetchSuggestions = async () => {
+      try {
+        const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+        const symptomsText = summaryData?.symptoms?.join(", ") || transcript || "triệu chứng mệt mỏi";
+        
+        const response = await ai.models.generateContent({
+          model: "gemini-3-flash-preview",
+          contents: `Hãy dựa trên triệu chứng "${symptomsText}" để đưa ra 4 lời khuyên chăm sóc sức khỏe ban đầu ngắn gọn, thực tế cho bệnh nhân.`,
+          config: {
+            systemInstruction: "Bạn là trợ lý y khoa. Hãy đưa ra các lời khuyên chăm sóc sức khỏe ban đầu an toàn, không thay thế chẩn đoán bác sĩ. Trả về JSON mảng 4 đối tượng {title, description}.",
+            responseMimeType: "application/json",
+            responseSchema: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  title: { type: Type.STRING },
+                  description: { type: Type.STRING }
+                },
+                required: ["title", "description"]
+              }
+            }
+          }
+        });
 
-    try {
-      setIsLoading(true);
-      const symptomsText = summaryData?.symptoms?.join(", ") || transcript;
-      const prompt = `Bạn là trợ lý y khoa. Dựa trên triệu chứng: "${symptomsText}", hãy đưa ra 4 lời khuyên sức khỏe. 
-      Trả về duy nhất mảng JSON: [{"title": "...", "description": "..."}]`;
-
-      const response = await fetch('/api/gemini', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt })
-      });
-
-      const data = await response.json();
-      setSuggestions(data);
-    } catch (err) {
-      // Fallback khi lỗi
-      setSuggestions([
-        { title: "Nghỉ ngơi đầy đủ", description: "Tránh hoạt động nặng để cơ thể phục hồi." },
-        // ... các lời khuyên mặc định
-      ]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+        const data = JSON.parse(response.text);
+        setSuggestions(data);
+      } catch (err) {
+        console.error("AI Error:", err);
+        // Fallback suggestions
+        setSuggestions([
+          { title: "Nghỉ ngơi đầy đủ", description: "Tránh hoạt động nặng, ngủ đủ giấc để cơ thể phục hồi." },
+          { title: "Uống đủ nước", description: "Uống ít nhất 2 lít nước mỗi ngày." },
+          { title: "Theo dõi triệu chứng", description: "Ghi chú nếu triệu chứng thay đổi hoặc trở nên nghiêm trọng hơn." },
+          { title: "Tránh căng thẳng", description: "Giữ tinh thần thoải mái, hít thở sâu." }
+        ]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
   fetchSuggestions();
 }, [transcript, summaryData]);
 
