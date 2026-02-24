@@ -45,7 +45,6 @@ export default function Completion() {
 
 useEffect(() => {
   const fetchSuggestions = async () => {
-    // Chỉ chạy nếu có dữ liệu đầu vào
     if (!transcript && !summaryData?.symptoms) return;
 
     try {
@@ -60,7 +59,6 @@ useEffect(() => {
       const genAI = new GoogleGenerativeAI(apiKey);
       const model = genAI.getGenerativeModel({ 
         model: "gemini-1.5-flash",
-        // Ép AI luôn trả về JSON sạch
         generationConfig: { responseMimeType: "application/json" }
       });
 
@@ -71,14 +69,11 @@ useEffect(() => {
 
       const result = await model.generateContent(prompt);
       const text = result.response.text();
-      
-      // JSON.parse trực tiếp vì đã có cấu hình responseMimeType ở trên
       const data = JSON.parse(text);
       setSuggestions(data);
 
     } catch (err) {
       console.error("AI Error:", err);
-      // Giữ nguyên fallback data của bạn là rất tốt!
       setSuggestions([
         { title: "Nghỉ ngơi đầy đủ", description: "Tránh hoạt động nặng để cơ thể phục hồi." },
         { title: "Uống đủ nước", description: "Bổ sung nước lọc hoặc oresol nếu cần." },
@@ -91,15 +86,11 @@ useEffect(() => {
   };
 
   fetchSuggestions();
-}, [transcript, summaryData?.symptoms]); // Thêm mảng phụ thuộc ở đây
-  if (transcript || summaryData) {
-    fetchSuggestions();
-  }
-}, [transcript, summaryData]);
+}, [transcript, summaryData?.symptoms]); // Kết thúc useEffect ở đây, không thêm gì nữa
 
-  const toggleCheck = (id: string) => {
-    setCheckedItems(prev => ({ ...prev, [id]: !prev[id] }));
-  };
+const toggleCheck = (id: string) => {
+  setCheckedItems(prev => ({ ...prev, [id]: !prev[id] }));
+};
 
   const getIcon = (index: number) => {
     const icons = [Moon, Coffee, Activity, Wind];
