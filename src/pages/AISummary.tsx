@@ -90,8 +90,12 @@ export default function AISummary() {
       throw new Error("Không tìm thấy API Key trong file .env");
     }
 
-    const genAI = new GoogleGenerativeAI(apiKey);
-    // Dùng model 1.5-flash cho nhanh và ổn định
+    const model = genAI.getGenerativeModel({ 
+  model: "gemini-1.5-flash", 
+  generationConfig: {
+    responseMimeType: "application/json",
+  },
+});
    
   
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
