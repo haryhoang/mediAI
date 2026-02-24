@@ -84,19 +84,23 @@ export default function AISummary() {
 const generateSummary = async () => {
   try {
     setIsLoading(true);
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) throw new Error("Missing GEMINI_API_KEY");
+
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({
+      model: "gemini-2.5-flash",
+      generationConfig: { responseMimeType: "application/json" },
+    });
+
     const prompt = `Bạn là thư ký y khoa. Hãy phân tích nội dung sau và trả về JSON:
       Nội dung: "${transcript}"
       Yêu cầu JSON có cấu trúc: { "symptoms": [], "medicines": [], "vital_signs": {"pulse": "", "temperature": "", "blood_pressure": ""}, "clinical_note": "" }`;
 
-    const response = await fetch('/api/gemini', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt })
-    });
-
-    if (!response.ok) throw new Error("Lỗi kết nối Server AI");
-
-    const data = await response.json();
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
+    const data = JSON.parse(text);
     setSummaryData(data);
   } catch (err: any) {
     setError("Lỗi: " + err.message);
