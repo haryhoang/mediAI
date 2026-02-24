@@ -32,7 +32,7 @@ export default async function handler(req, res) {
     const response = await result.response;
     const text = response.text();
 
-    // Try parsing JSON, fallback to plain text
+    // Safer parsing
     let data;
     try {
       data = JSON.parse(text);
@@ -49,3 +49,4 @@ export default async function handler(req, res) {
     });
   }
 }
+
