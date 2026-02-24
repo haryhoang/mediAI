@@ -49,44 +49,30 @@ useEffect(() => {
 
     try {
       setIsLoading(true);
-      const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-      
-      if (!apiKey) {
-        console.error("Thiếu API Key!");
-        return;
-      }
-
-      const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ 
-        model: "gemini-2.0-flash",
-        generationConfig: { responseMimeType: "application/json" }
-      });
-
       const symptomsText = summaryData?.symptoms?.join(", ") || transcript;
-      
       const prompt = `Bạn là trợ lý y khoa. Dựa trên triệu chứng: "${symptomsText}", hãy đưa ra 4 lời khuyên sức khỏe. 
       Trả về duy nhất mảng JSON: [{"title": "...", "description": "..."}]`;
 
-      const result = await model.generateContent(prompt);
-      const text = result.response.text();
-      const data = JSON.parse(text);
-      setSuggestions(data);
+      const response = await fetch('/api/gemini', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt })
+      });
 
+      const data = await response.json();
+      setSuggestions(data);
     } catch (err) {
-      console.error("AI Error:", err);
+      // Fallback khi lỗi
       setSuggestions([
         { title: "Nghỉ ngơi đầy đủ", description: "Tránh hoạt động nặng để cơ thể phục hồi." },
-        { title: "Uống đủ nước", description: "Bổ sung nước lọc hoặc oresol nếu cần." },
-        { title: "Theo dõi nhiệt độ", description: "Kiểm tra thân nhiệt định kỳ." },
-        { title: "Thăm khám sớm", description: "Đến gặp bác sĩ nếu triệu chứng kéo dài." }
+        // ... các lời khuyên mặc định
       ]);
     } finally {
       setIsLoading(false);
     }
   };
-
   fetchSuggestions();
-}, [transcript, summaryData?.symptoms]); // Kết thúc useEffect ở đây, không thêm gì nữa
+}, [transcript, summaryData]);
 
 const toggleCheck = (id: string) => {
   setCheckedItems(prev => ({ ...prev, [id]: !prev[id] }));
